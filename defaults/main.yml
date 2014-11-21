@@ -27,5 +27,14 @@ gem_home: "{{ home_directory }}/.gem"
 # custom paths necessary to locate bundler, rake, ... (e.g. your rbenv shims directory)
 rails_bin_paths: []
 
+default_env: &default_env
+  RAILS_ENV: "{{ rails_env }}"
+  PATH: "{{ gem_home }}/bin:{{ rails_bin_paths | union([ansible_env.PATH]) | join(':') }}"
+  GEM_HOME: "{{ gem_home }}"
+
+custom_rails_environment: 
+
 # custom environment for running tasks
-rails_environment: []
+rails_environment: 
+  <<: *default_env
+  <<: *custom_rails_environment
