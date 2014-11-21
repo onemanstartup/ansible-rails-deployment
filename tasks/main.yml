@@ -37,6 +37,7 @@
     RAILS_ENV: "{{ rails_env }}"
     PATH: "{{ gem_home }}/bin:{{ rails_bin_paths | union([ansible_env.PATH]) | join(':') }}"
     GEM_HOME: "{{ gem_home }}"
+  environment: rails_environment
   when: migrate and (force_migrate or rails_schema|changed)
 
 - name: check assets for diffs
