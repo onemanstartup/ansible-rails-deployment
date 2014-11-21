@@ -20,10 +20,7 @@
   command: chdir="{{ build_path }}" bundle install --path='{{ shared_path }}/vendor/bundle' --gemfile='./Gemfile' --deployment --binstubs='./bin'
   register: bundler
   changed_when: "'Installing' in bundler or 'Updating' in bundler or 'upgrade' in bundler"
-  environment:
-    GEM_HOME: "{{ gem_home }}"
-    PATH: "{{ gem_home }}/bin:{{ rails_bin_paths | union([ansible_env.PATH]) | join(':') }}"
-    RAILS_ENV: "{{ rails_env }}"
+  environment: rails_environment
 
 - name: check schema for diffs
   diff:
@@ -44,10 +41,7 @@
 
 - name: precompile asset files if necessary
   command: chdir="{{ build_path }}" bundle exec rake assets:precompile
-  environment:
-    RAILS_ENV: "{{ rails_env }}"
-    PATH: "{{ gem_home }}/bin:{{ rails_bin_paths | union([ansible_env.PATH]) | join(':') }}"
-    GEM_HOME: "{{ gem_home }}"
+  environment: rails_environment
   when: compile_assets and (assets|changed or force_asset_compilation)
 
 - name: copy asset files when not changed
